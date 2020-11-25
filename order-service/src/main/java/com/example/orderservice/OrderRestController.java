@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Command API
  */
 @RestController
 public class OrderRestController {
-
-    private static final Logger logger = LoggerFactory.getLogger(OrderRestController.class);
-
     private static final String RESOURCE_PATH = "/orders";
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final OrderService orderService;
 
     public OrderRestController(final OrderService orderService) {
@@ -43,9 +43,11 @@ public class OrderRestController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAll() {
         logger.info("Getting orders");
+        final List<Order> orders = Arrays.asList(
+                new Order("1234-5678", -1L, Order.Status.CANCELLED, orderService.getTimestamp()));
         final ListResponse<Order> listResponse = new ListResponse<>();
-        listResponse.setTotal(0L);
-        listResponse.setItems(new ArrayList<>());
+        listResponse.setTotal((long) orders.size());
+        listResponse.setItems(orders);
         return ResponseEntity.ok(listResponse);
     }
 }

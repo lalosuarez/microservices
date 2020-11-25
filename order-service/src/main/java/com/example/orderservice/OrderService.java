@@ -13,9 +13,7 @@ import java.util.UUID;
 
 @Service
 public class OrderService {
-
-    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final MessageChannel messageChannel;
 
     public OrderService(final OrdersBinding ordersBinding) {
@@ -37,7 +35,7 @@ public class OrderService {
     /**
      * @return
      */
-    private long getTimestamp() {
+    public long getTimestamp() {
         return new Date().getTime();
     }
 
