@@ -1,5 +1,6 @@
 package com.example.orderdetailservice;
 
+import com.example.orderdetailservice.validation.OrderValidation;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderDetailProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderDetailProcessor.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /*@StreamListener
     @SendTo({OrderBinding.ORDERS_VALIDATION_OUT})
@@ -119,7 +120,7 @@ public class OrderDetailProcessor {
         return orders
                 .filter((key, order) -> Order.Status.CREATED.equals(order.getStatus()))
                 .map((key, order) -> getOrderValidationResult(order, isValid(order) ?
-                        OrderValidationResult.PASS : OrderValidationResult.FAIL));
+                        OrderValidation.Status.PASS : OrderValidation.Status.FAIL));
     }
 
     /**
@@ -129,9 +130,9 @@ public class OrderDetailProcessor {
      * @return
      */
     private KeyValue<String, OrderValidation> getOrderValidationResult(final Order order,
-                                                                                                              final OrderValidationResult passOrFail) {
+                                                                       final OrderValidation.Status passOrFail) {
         logger.info("Validating order {}", order.getId());
-        final OrderValidation value = new OrderValidation(order.getId(), OrderValidationType.ORDER_DETAILS_CHECK, passOrFail);
+        final OrderValidation value = new OrderValidation(order.getId(), OrderValidation.Type.ORDER_DETAILS_CHECK, passOrFail);
         logger.debug("validation result {}", value);
         return new KeyValue<>(order.getId(), value);
     }

@@ -1,5 +1,6 @@
-package com.example.orderdetailservice;
+package com.example.orderdetailservice.validation;
 
+import com.example.orderdetailservice.OrderBinding;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.kstream.Grouped;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderValidationsSink {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderValidationsSink.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @StreamListener
     public void process(

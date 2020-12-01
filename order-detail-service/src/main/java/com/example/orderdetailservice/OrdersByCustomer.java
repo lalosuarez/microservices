@@ -1,7 +1,10 @@
 package com.example.orderdetailservice;
 
-import com.example.kafka.streams.order.Order;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 import java.util.LinkedList;
 import java.util.List;
