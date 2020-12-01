@@ -6,7 +6,7 @@ import org.springframework.messaging.MessageChannel;
 /**
  *
  */
-public interface OrdersBinding {
+public interface OrderBinding {
     String ORDERS_OUT = "orders-out";
 
     @Output(ORDERS_OUT)

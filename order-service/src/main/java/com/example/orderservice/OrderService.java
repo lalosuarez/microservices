@@ -2,6 +2,7 @@ package com.example.orderservice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -16,8 +17,9 @@ public class OrderService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final MessageChannel messageChannel;
 
-    public OrderService(final OrdersBinding ordersBinding) {
-        this.messageChannel = ordersBinding.ordersOut();
+    @Autowired
+    public OrderService(final OrderBinding orderBinding) {
+        this.messageChannel = orderBinding.ordersOut();
     }
 
     /**

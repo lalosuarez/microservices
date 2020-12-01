@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>order-service</artifactId>
+	<artifactId>order-detail-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>order-service</name>
-	<description>Order service</description>
+	<name>order-detail-service</name>
+	<description>Order Detail Service</description>
 
 	<dependencies>
 		<dependency>

@@ -41,7 +41,12 @@ docker-compose stop
 2. http://localhost:8084/v1/orders/customers/1
 3. http://localhost:8084/v1/orders/validations
 4. http://localhost:8084/v1/orders/validations/status
+5. http://localhost:8888/order-service/default (Config)
+6. http://localhost:8761/ (Discovery)
 
 ### REST endpoints gateway
 1. http://localhost:9999/api/order-service/v1/orders (Micro Proxy)
 2. http://localhost:9999/api/v1/orders
+
+### TODO:
+1. 
