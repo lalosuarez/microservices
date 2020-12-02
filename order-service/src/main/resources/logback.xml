@@ -13,7 +13,7 @@
             <fileNamePattern>order-service.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- keep 8 days' worth of history capped at 2MB total size -->
             <maxHistory>8</maxHistory>
-            <totalSizeCap>2MB</totalSizeCap>
+            <totalSizeCap>10MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <pattern>%d{ISO8601} %5p [%t] %c{2}.%method:%L - %m%n</pattern>

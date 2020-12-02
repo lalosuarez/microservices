@@ -42,7 +42,7 @@ docker-compose stop
 ### REST endpoints
 1. http://localhost:8084/v1/orders
 curl -v -X GET http://localhost:8084/v1/orders | json_pp
-curl -v -d '{"customerId": 1}' -H "Content-Type: application/json" -X POST http://localhost:/v1/orders
+curl -v -d '{"customerId": 1}' -H "Content-Type: application/json" -X POST http://localhost:8084/v1/orders
 
 2. http://localhost:8084/v1/orders/customers/1
 3. http://localhost:8084/v1/orders/validations
