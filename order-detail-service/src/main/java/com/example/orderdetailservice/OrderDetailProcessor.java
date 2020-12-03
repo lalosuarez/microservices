@@ -90,6 +90,7 @@ public class OrderDetailProcessor {
 
     private void groupById(final KStream<String, Order> orders) {
         orders
+                .peek((key, value) -> logger.debug("Order group by id {} {}", key, value))
                 .groupByKey(Grouped.with(Serdes.String(), new JsonSerde<>(Order.class)))
                 .aggregate(
                         Order::new,
@@ -107,7 +108,7 @@ public class OrderDetailProcessor {
                         OrdersByCustomer::new,
                         (customerId, order, ordersByCustomer) -> {
                             ordersByCustomer.getOrders().add(order);
-                            logger.debug("orders by customer id {} = {}", customerId, ordersByCustomer.getOrders().size());
+                            logger.debug("Order by customer id {} = {}", customerId, ordersByCustomer.getOrders().size());
                             return ordersByCustomer;
                         },
                         Materialized.<Long, OrdersByCustomer, KeyValueStore<Bytes, byte[]>>as(OrderBinding.ORDERS_BY_CUSTOMER_ID_STORE)
@@ -133,7 +134,7 @@ public class OrderDetailProcessor {
                                                                        final OrderValidation.Status passOrFail) {
         logger.info("Validating order {}", order.getId());
         final OrderValidation value = new OrderValidation(order.getId(), OrderValidation.Type.ORDER_DETAILS_CHECK, passOrFail);
-        logger.debug("validation result {}", value);
+        logger.debug("Validation result {}", value);
         return new KeyValue<>(order.getId(), value);
     }
 

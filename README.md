@@ -26,12 +26,20 @@ conf/zoo.cfg
 bin/kafka-topics.sh --list --zookeeper localhost:2181
 
 ##### Start a cluster with Docker
-docker-compose up -d
+1. cd kafka
+2. docker-compose up -d
 
+###### Commands
 1. docker exec -it kafka /bin/sh
 2. cd /opt/kafka_2.12-2.5.0/
 3. bin/kafka-topics.sh --list --zookeeper zookeeper:2181
 4. bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic test
+
+or
+
+3. docker exec -it kafka kafka-topics.sh --list --zookeeper zookeeper:2181
+4. docker exec -it kafka kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic test
+5. docker-compose down (Stop and remove containers, networks, images, and volumes)
 
 ##### Add more brokers with Docker
 docker-compose scale kafka=3
@@ -41,18 +49,21 @@ docker-compose stop
 
 ### REST endpoints
 1. http://localhost:8084/v1/orders
-curl -v -X GET http://localhost:8084/v1/orders | json_pp
-curl -v -d '{"customerId": 1}' -H "Content-Type: application/json" -X POST http://localhost:8084/v1/orders
+curl -v http://localhost:8084/v1/orders | json_pp
+curl -v -d '{"customerId": 1}' -H "Content-Type: application/json" http://localhost:8084/v1/orders
 
-2. http://localhost:8084/v1/orders/customers/1
-3. http://localhost:8084/v1/orders/validations
-4. http://localhost:8084/v1/orders/validations/status
+curl -v http://localhost:8085/v1/orders | json_pp
+
+2. http://localhost:8085/v1/orders/customers/1
+3. http://localhost:8085/v1/orders/validations
+4. http://localhost:8085/v1/orders/validations/status
 5. http://localhost:8888/order-service/default (Config)
 6. http://localhost:8761/ (Discovery)
 
 ### REST endpoints gateway
 1. http://localhost:9999/api/order-service/v1/orders (Micro Proxy)
 2. http://localhost:9999/api/v1/orders
+curl -v -d '{"customerId": -1}' -H "Content-Type: application/json" http://localhost:9999/api/v1/orders
 
 ### TODO:
 1. Create topics manually for:

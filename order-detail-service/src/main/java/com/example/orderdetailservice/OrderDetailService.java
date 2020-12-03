@@ -74,13 +74,13 @@ public class OrderDetailService {
     }
 
     public ListResponse<Order> getOrdersByCustomerId(final Long id) {
-        logger.info("Getting orders by customer {}", id);
         final ReadOnlyKeyValueStore<Long, OrdersByCustomer> store = interactiveQueryService
                 .getQueryableStore(OrderBinding.ORDERS_BY_CUSTOMER_ID_STORE,
                         QueryableStoreTypes.keyValueStore());
 
         final OrdersByCustomer ordersByCustomer = store.get(id);
         if (ordersByCustomer == null) {
+            logger.info("Orders by customer {} not found", id);
             return null;
         }
         return new ListResponse((long)ordersByCustomer.getOrders().size(),

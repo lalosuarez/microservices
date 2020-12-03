@@ -25,13 +25,14 @@ public class OrderValidationsSink {
 
         // Groups by validation status and stores the result in a materialized view
         orderValidations
-                .peek((key, orderValidation) -> logger.info("Order {} validation result {}", key,
+                .peek((key, orderValidation) -> logger.info("OrderValidation {} result {}", key,
                         orderValidation.getValidationResult()))
                 .groupBy((key, orderValidation) -> orderValidation.getValidationResult().name())
                 .count(Materialized.as(OrderBinding.ORDERS_VALIDATION_BY_STATUS_STORE));
 
         // Groups by id and stores the result in a materialized view
         orderValidations
+                .peek((key, value) -> logger.debug("OrderValidation group by id {} {}", key, value))
                 .groupByKey(Grouped.with(Serdes.String(), new JsonSerde<>(OrderValidation.class)))
                 .aggregate(
                         OrderValidation::new,

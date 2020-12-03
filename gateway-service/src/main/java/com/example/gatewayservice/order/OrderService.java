@@ -80,7 +80,6 @@ public class OrderService {
     private void sendMessage(final Order order) {
         try {
             byte[] msgKey = order.getId().getBytes();
-            logger.debug("Message key bytes = {}", msgKey);
             Message<Order> message = MessageBuilder
                     .withPayload(order)
                     .setHeader(KafkaHeaders.MESSAGE_KEY, msgKey)
