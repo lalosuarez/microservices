@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="15 seconds">
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{ISO8601} %5p [%t] %c{2}.%method:%L - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="periodic-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>../logs/order-service.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>order-service.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 8 days' worth of history capped at 2MB total size -->
+            <maxHistory>8</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{ISO8601} %5p [%t] %c{2}.%method:%L - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="stdout"/>
+        <!--<appender-ref ref="periodic-file" />-->
+    </root>
+    <logger name="org.apache.kafka.streams.processor.internals" level="WARN"/>
+    <logger name="com.example.orderservice" level="DEBUG"/>
+</configuration>
