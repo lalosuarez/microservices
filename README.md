@@ -49,10 +49,12 @@ docker-compose stop
 
 ### REST endpoints
 1. http://localhost:8084/v1/orders
-curl -v http://localhost:8084/v1/orders | json_pp
-curl -v -d '{"customerId": 1}' -H "Content-Type: application/json" http://localhost:8084/v1/orders
-
-curl -v http://localhost:8085/v1/orders | json_pp
+ - curl -v http://localhost:8084/v1/orders | json_pp
+ - curl -v -d '{"customerId": 1}' -H "Content-Type: application/json" http://localhost:8084/v1/orders
+ - curl -v http://localhost:8085/v1/orders | json_pp
+ - curl -v http://localhost:8085/v1/orders/customers/1 | json_pp
+ - curl -v http://localhost:8085/v1/orders/validations | json_pp
+ - curl -v http://localhost:8085/v1/orders/validations/status | json_pp
 
 2. http://localhost:8085/v1/orders/customers/1
 3. http://localhost:8085/v1/orders/validations
@@ -63,7 +65,7 @@ curl -v http://localhost:8085/v1/orders | json_pp
 ### REST endpoints gateway
 1. http://localhost:9999/api/order-service/v1/orders (Micro Proxy)
 2. http://localhost:9999/api/v1/orders
-curl -v -d '{"customerId": -1}' -H "Content-Type: application/json" http://localhost:9999/api/v1/orders
+ - curl -v -d '{"customerId": -1}' -H "Content-Type: application/json" http://localhost:9999/api/v1/orders
 
 ### TODO:
 1. Create topics manually for:

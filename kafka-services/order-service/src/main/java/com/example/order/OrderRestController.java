@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
 import com.example.order.message.Order;
 
 /**
@@ -38,17 +36,5 @@ public class OrderRestController {
         return ResponseEntity
                 .created(new URI("http://localhost:8084/v1/orders/" + order.getId()))
                 .build();
-    }
-
-    @RequestMapping(path = RESOURCE_PATH, method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getAll() {
-        LOGGER.info("Get orders");
-        final List<Order> orders = Arrays.asList(
-                new Order("1234-5678", -1L, Order.Status.CANCELLED, orderService.getTimestamp()));
-        final ListResponse<Order> listResponse = new ListResponse<>();
-        listResponse.setTotal((long) orders.size());
-        listResponse.setItems(orders);
-        return ResponseEntity.ok(listResponse);
     }
 }

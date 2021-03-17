@@ -1,5 +1,6 @@
 package com.example.order;
 
+import com.example.order.config.KafkaConfig;
 import com.example.order.message.Order;
 import com.example.order.validation.OrderValidation;
 import org.apache.kafka.common.serialization.Serde;
@@ -40,7 +41,7 @@ public class OrderDetailProcessor {
 
         // Sends the validation stream to validations topic
         getOrderValidationKStream(ordersStream)
-                 .to(KafkaConfig.ORDERS_VALIDATION, Produced.with(stringSerde, orderValidationSerde));
+                 .to(KafkaConfig.ORDERS_VALIDATION_TOPIC, Produced.with(stringSerde, orderValidationSerde));
     }
 
     private void groupById(final KStream<String, Order> orders) {
