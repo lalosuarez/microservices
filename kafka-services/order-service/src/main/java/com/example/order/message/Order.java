@@ -1,4 +1,4 @@
-package com.example.orderservice;
+package com.example.order.message;
 
 import lombok.Getter;
 import lombok.Setter;

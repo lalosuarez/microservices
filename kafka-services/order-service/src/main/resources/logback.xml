@@ -25,5 +25,5 @@
         <!--<appender-ref ref="periodic-file" />-->
     </root>
     <logger name="org.apache.kafka.streams.processor.internals" level="WARN"/>
-    <logger name="com.example.orderservice" level="DEBUG"/>
+    <logger name="com.example.order" level="DEBUG"/>
 </configuration>

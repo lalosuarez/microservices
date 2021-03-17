@@ -1,4 +1,4 @@
-package com.example.orderservice;
+package com.example.order;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
+import com.example.order.message.Order;
 
 /**
  * Command API
@@ -21,7 +22,7 @@ import java.util.List;
 @RestController
 public class OrderRestController {
     private static final String RESOURCE_PATH = "/orders";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderRestController.class);
     private final OrderService orderService;
 
     @Autowired
@@ -32,7 +33,7 @@ public class OrderRestController {
     @RequestMapping(path = RESOURCE_PATH, method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity create(@RequestBody final Order order) throws URISyntaxException {
-        logger.info("Create order {}", order);
+        LOGGER.info("Create order {}", order);
         orderService.create(order);
         return ResponseEntity
                 .created(new URI("http://localhost:8084/v1/orders/" + order.getId()))
@@ -42,7 +43,7 @@ public class OrderRestController {
     @RequestMapping(path = RESOURCE_PATH, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAll() {
-        logger.info("Get orders");
+        LOGGER.info("Get orders");
         final List<Order> orders = Arrays.asList(
                 new Order("1234-5678", -1L, Order.Status.CANCELLED, orderService.getTimestamp()));
         final ListResponse<Order> listResponse = new ListResponse<>();

@@ -1,4 +1,4 @@
-package com.example.orderdetailservice.validation;
+package com.example.order.validation;
 
 import lombok.Getter;
 import lombok.Setter;

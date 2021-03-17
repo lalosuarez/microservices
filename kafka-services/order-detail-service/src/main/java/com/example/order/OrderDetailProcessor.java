@@ -1,7 +1,7 @@
-package com.example.orderdetailservice;
+package com.example.order;
 
-import com.example.orderdetailservice.validation.OrderValidation;
-import com.example.orderservice.Order;
+import com.example.order.message.Order;
+import com.example.order.validation.OrderValidation;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -12,23 +12,21 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrderDetailProcessor {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderDetailProcessor.class);
 
     @Autowired
     public void validateOrder(final StreamsBuilder builder) {
-        logger.info("Validate order processor");
+        LOGGER.info("Validate order processor");
 
-        final Serde<String> stringSerde = Serdes.String();
-        final JsonSerde<Order> orderSerde = new JsonSerde<>();
-        JsonDeserializer jsonDeserializer = new JsonDeserializer();
-        final JsonSerde<OrderValidation> orderValidationSerde = new JsonSerde<>();
+        final var stringSerde = Serdes.String();
+        final var orderSerde = new JsonSerde<>(Order.class);
+        final var orderValidationSerde = new JsonSerde<>(OrderValidation.class);
 
         // Builds the stream from the orders topic
         KStream<String, Order> ordersStream = builder.
@@ -38,7 +36,7 @@ public class OrderDetailProcessor {
         groupById(ordersStream);
 
         // Groups by customer id and stores the result in a materialized view
-        //groupByCustomerId(ordersStream);
+        groupByCustomerId(ordersStream);
 
         // Sends the validation stream to validations topic
         getOrderValidationKStream(ordersStream)
@@ -46,11 +44,11 @@ public class OrderDetailProcessor {
     }
 
     private void groupById(final KStream<String, Order> orders) {
-        logger.debug("Validate order processor group by id");
-        final Serde<String> stringSerde = Serdes.String();
-        final JsonSerde<Order> orderSerde = new JsonSerde<>();
+        LOGGER.debug("Validate order processor group by id");
+        final var stringSerde = Serdes.String();
+        final var orderSerde = new JsonSerde<>(Order.class);
         orders
-                .peek((key, value) -> logger.debug("Order group by id {} {}", key, value))
+                .peek((key, value) -> LOGGER.info("key: {}, value: {}", key, value))
                 .groupByKey(Grouped.with(stringSerde, orderSerde))
                 .aggregate(
                         Order::new,
@@ -62,17 +60,17 @@ public class OrderDetailProcessor {
     }
 
     private void groupByCustomerId(final KStream<String, Order> orders) {
-        logger.debug("Validate order processor group by customer id");
+        LOGGER.debug("Validate order processor group by customer id");
         final Serde<Long> longSerde = Serdes.Long();
-        final JsonSerde<Order> orderSerde = new JsonSerde<>();
-        final JsonSerde<OrdersByCustomer> orderByCustomerSerde = new JsonSerde<>();
+        final var orderSerde = new JsonSerde<>(Order.class);
+        final var orderByCustomerSerde = new JsonSerde<>(OrdersByCustomer.class);
         orders
                 .groupBy((s, order) -> order.getCustomerId(), Grouped.with(longSerde, orderSerde))
                 .aggregate(
                         OrdersByCustomer::new,
                         (customerId, order, ordersByCustomer) -> {
                             ordersByCustomer.getOrders().add(order);
-                            logger.debug("Order by customer id {} = {}", customerId, ordersByCustomer.getOrders().size());
+                            LOGGER.info("customerId: {}, total of orders: {}", customerId, ordersByCustomer.getOrders().size());
                             return ordersByCustomer;
                         },
                         Materialized.<Long, OrdersByCustomer, KeyValueStore<Bytes, byte[]>>as(KafkaConfig.ORDERS_BY_CUSTOMER_ID_STORE)
@@ -82,7 +80,7 @@ public class OrderDetailProcessor {
     }
 
     private KStream<String, OrderValidation> getOrderValidationKStream(final KStream<String, Order> orders) {
-        logger.debug("Validate order processor get validation stream");
+        LOGGER.debug("Validate order processor get validation stream");
         return orders
                 .filter((key, order) -> Order.Status.CREATED.equals(order.getStatus()))
                 .map((key, order) -> getOrderValidationResult(order, isValid(order) ?
@@ -97,9 +95,9 @@ public class OrderDetailProcessor {
      */
     private KeyValue<String, OrderValidation> getOrderValidationResult(final Order order,
                                                                        final OrderValidation.Status passOrFail) {
-        logger.info("Validating order {}", order.getId());
+        LOGGER.info("Validating order {}", order.getId());
         final OrderValidation value = new OrderValidation(order.getId(), OrderValidation.Type.ORDER_DETAILS_CHECK, passOrFail);
-        logger.debug("Validation result {}", value);
+        LOGGER.info("Validation result {}", value);
         return new KeyValue<>(order.getId(), value);
     }
 

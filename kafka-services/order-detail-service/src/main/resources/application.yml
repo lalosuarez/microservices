@@ -4,20 +4,19 @@ server:
     contextPath: /v1
 
 spring:
-  config.activate.on-profile: default
-  application.name: order-detail-service
-  main.banner-mode: off
+  config:
+    activate:
+      on-profile: default
+  application:
+    name: order-detail-service
+  main:
+    banner-mode: off
   kafka:
     bootstrap-servers: localhost:9092,localhost:9091
-    consumer:
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: com.example.orderservice
     streams:
       application-id: order-detail-service
       properties:
-#        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
-#        default.value.serde: org.springframework.kafka.support.serializer.JsonSerde
-        spring.json.trusted.packages: com.example
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        commit.interval.ms: 3000
+        spring.json.trusted.packages: com.example.order.message

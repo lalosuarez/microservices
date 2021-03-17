@@ -1,4 +1,4 @@
-package com.example.orderservice;
+package com.example.order;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +12,12 @@ import org.springframework.util.concurrent.FailureCallback;
 import org.springframework.util.concurrent.SuccessCallback;
 
 import java.util.Date;
+import com.example.order.message.Order;
 import java.util.UUID;
 
 @Service
 public class OrderService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
 
     private final KafkaTemplate<String, Order> kafkaTemplate;
 
@@ -63,7 +64,7 @@ public class OrderService {
     }
 
     private FailureCallback failureCallback() {
-        return ex -> logger.error("Error sending order", ex);
+        return ex -> LOGGER.error("Error sending order", ex);
     }
 
     private SuccessCallback<SendResult<String, Order>> successCallback(Order order) {
@@ -72,7 +73,7 @@ public class OrderService {
                 final String topic = result.getRecordMetadata().topic();
                 final long offset = result.getRecordMetadata().offset();
                 final int partition = result.getRecordMetadata().partition();
-                logger.info("Callback {} topic '{}' offset = '{}' partition = '{}'", order, topic, offset, partition);
+                LOGGER.info("Callback {} topic '{}' offset = '{}' partition = '{}'", order, topic, offset, partition);
             }
         };
     }
